@@ -68,7 +68,6 @@ RUN cd /etc/nginx/modsecurity.d && \
 
 # Copiar archivos de configuración
 COPY ./modsecurity.d/modsecurity.conf /etc/nginx/modsecurity.d/modsecurity.conf
-COPY ./modsecurity.d/crs-setup.conf /etc/nginx/modsecurity.d/owasp-crs/crs-setup.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # Exponer puerto

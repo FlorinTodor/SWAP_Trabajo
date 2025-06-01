@@ -20,7 +20,11 @@ services:
     depends_on:
       - juice-shop
     volumes:
+      - ./nginx_modsec/modsecurity.d/crs-setup.conf:/etc/nginx/modsecurity.d/owasp-crs/crs-setup.conf
       # Montamos los logs de Nginx y ModSecurity para fácil acceso desde el host (opcional pero útil)
+      # Monta tu archivo de exclusión específico
+      - ./nginx_modsec/modsecurity.d/my-socketio-exclusion.conf:/etc/nginx/modsecurity.d/my-socketio-exclusion.conf
+      
       - ./nginx_modsec/logs/nginx:/var/log/nginx
       - ./nginx_modsec/logs/modsec:/var/log/modsecurity
       # Si necesitas persistir configuraciones de OWASP CRS que modifiques, podrías montar la carpeta de reglas
