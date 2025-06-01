@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  juice-shop:
+    image: bkimminich/juice-shop
+    container_name: juice_shop_app
+    restart: always
+    ports:
+      - "3001:3000" # Mapeamos el puerto interno 3000 de Juice Shop a 3001 en el host
+                    # para evitar conflictos si ya usas el 3000.
+                    # El WAF accederá internamente al puerto 3000 de este contenedor.
+
+  nginx-waf:
+    build: ./nginx_modsec # Le dice a Docker Compose que construya la imagen desde el Dockerfile en la carpeta nginx_modsec
+    container_name: nginx_waf_proxy
+    restart: always
+    ports:
+      - "8080:80"   # Puerto público del WAF (accedes a Juice Shop vía http://localhost:8080)
+      - "8443:443"  # Si decides configurar SSL/TLS en el WAF más adelante
+    depends_on:
+      - juice-shop
+    volumes:
+      # Montamos los logs de Nginx y ModSecurity para fácil acceso desde el host (opcional pero útil)
+      - ./nginx_modsec/logs/nginx:/var/log/nginx
+      - ./nginx_modsec/logs/modsec:/var/log/modsecurity
+      # Si necesitas persistir configuraciones de OWASP CRS que modifiques, podrías montar la carpeta de reglas
+      # - ./nginx_modsec/modsecurity.d/rules:/usr/local/openresty/nginx/conf/modsecurity.d/owasp-crs/rules
